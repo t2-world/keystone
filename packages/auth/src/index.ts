@@ -54,6 +54,14 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
   };
 
+  console.log('createAuth = ', listKey,
+    secretField,
+    initFirstItem,
+    identityField,
+    magicAuthLink,
+    passwordResetLink,
+    sessionData = 'id')
+
   /**
    * fields
    *
@@ -267,6 +275,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    */
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
+    console.log('keystoneConfig = ', keystoneConfig)
     let ui = keystoneConfig.ui;
     if (!keystoneConfig.ui?.isDisabled) {
       ui = {

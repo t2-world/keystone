@@ -76,6 +76,7 @@ export const SigninPage = ({
     );
   }
 
+  console.log('Please log in')
   return (
     <SigninContainer title="Keystone - Sign In">
       <Stack
