@@ -8,7 +8,7 @@ type InitTemplateArgs = {
 
 export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
   // -- TEMPLATE START
-  return `import { getInitPage } from '@keystone-6/auth/pages/InitPage';
+  return `import { getInitPage } from '@keystone-6/auth-with-metamask/pages/InitPage';
 
 const fieldPaths = ${JSON.stringify(initFirstItem.fields)};
 
