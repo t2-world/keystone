@@ -38,6 +38,7 @@ export const SigninPage = ({
   const [account, setAccount] = useState([])
   const [signer, setSigner]=useState()
 const [nonce, setNonce] = useState('')
+const [signature,setSignature] = useState('')
   const mutation = gql`
 
   mutation getNonce ($publicAddress: String!){
@@ -46,6 +47,16 @@ const [nonce, setNonce] = useState('')
     }
   }
 `;
+
+const signatureMutation = gql`
+
+mutation signatureAuthentication ($publicAddress: String!){
+  signatureAuthentication(publicAddress: $publicAddress) {
+    
+  }
+}
+`;
+
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const identityFieldRef = useRef<HTMLInputElement>(null);
@@ -85,7 +96,7 @@ const accounts=await provider.send('eth_requestAccounts', [])
 setAccount(accounts)
 const signers =await provider.getSigner()
 console.log('signer',signer,'accounts',accounts)
-await getNonce({variables:{publicAddress:accounts[0]} })
+await getNonce({variables:{publicAddress:accounts[0] } })
 setSigner(signers)
   } catch (error) {
     console.log('error',error);
@@ -96,8 +107,10 @@ const signMessage=async (e:any)=>{
   e.preventDefault();
 try {
   const signature=await signer.signMessage(nonce)
+  setSignature(signature)
+  console.log('signature',signature)
 } catch (error) {
-  console.log("errr",error)
+  console.log('errr',error)
 }
   }
   console.log('Please log in')
@@ -105,9 +118,8 @@ try {
 
   useEffect(() => {
 if(data)
-setNonce(data.getNonce.nonce)
+{setNonce(data.getNonce.nonce)} 
 {console.log('data',data)}
-  
   },[data])
   return (
     <SigninContainer title="Keystone - Sign In">
