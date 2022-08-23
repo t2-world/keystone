@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
@@ -35,6 +36,8 @@ export const SigninPage = ({
   publicAddress
 }: SigninPageProps) => {
   const [account, setAccount] = useState([])
+  const [signer, setSigner]=useState()
+const [nonce, setNonce] = useState('')
   const mutation = gql`
 
   mutation getNonce ($publicAddress: String!){
@@ -45,8 +48,6 @@ export const SigninPage = ({
 `;
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
-  const [state, setState] = useState({ identity: '', secret: '' });
-
   const identityFieldRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     identityFieldRef.current?.focus();
@@ -82,18 +83,32 @@ e.preventDefault();
 
 const accounts=await provider.send('eth_requestAccounts', [])
 setAccount(accounts)
-
-// The MetaMask plugin also allows signing transactions to
-// send ether and pay to change state within the blockchain.
-// For this, you need the account signer...
-const signer = provider.getSigner()
+const signers =await provider.getSigner()
 console.log('signer',signer,'accounts',accounts)
-
+await getNonce({variables:{publicAddress:accounts[0]} })
+setSigner(signers)
   } catch (error) {
     console.log('error',error);
   }
 }
+
+const signMessage=async (e:any)=>{
+  e.preventDefault();
+try {
+  const signature=await signer.signMessage(nonce)
+} catch (error) {
+  console.log("errr",error)
+}
+  }
   console.log('Please log in')
+
+
+  useEffect(() => {
+if(data)
+setNonce(data.getNonce.nonce)
+{console.log('data',data)}
+  
+  },[data])
   return (
     <SigninContainer title="Keystone - Sign In">
       <Stack
@@ -132,7 +147,6 @@ console.log('signer',signer,'accounts',accounts)
             {data?.authenticate.message}
           </Notice>
         )}
-      
 
         {mode === 'forgot password' ? (
           <Stack gap="medium" across>
@@ -154,7 +168,7 @@ console.log('signer',signer,'accounts',accounts)
                 // this is for while the page is loading but the mutation has finished successfully
                 data?.authenticate?.__typename === successTypename
               }
-              type="submit"
+      onClick={signMessage}
             >
               Sign in
             </Button>:     <Button
