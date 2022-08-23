@@ -7,16 +7,16 @@ import { validateSecret } from '../lib/validateSecret';
 export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
-  secretField,
+  // secretField,
   gqlNames,
-  secretFieldImpl,
+  // secretFieldImpl,
   base,
 }: {
   listKey: string;
   identityField: I;
-  secretField: S;
+  // secretField: S;
   gqlNames: AuthGqlNames;
-  secretFieldImpl: SecretFieldImpl;
+  // secretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
 }) {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
@@ -66,20 +66,20 @@ export function getBaseAuthSchema<I extends string, S extends string>({
         type: AuthenticationResult,
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
-          [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          // [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
+        async resolve(root, { [identityField]: identity,  }, context) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
 
           const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
-            secretFieldImpl,
+            // secretFieldImpl,
             identityField,
             identity,
-            secretField,
-            secret,
+            // secretField,
+            // secret,
             dbItemAPI
           );
 

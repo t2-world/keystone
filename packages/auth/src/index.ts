@@ -22,7 +22,7 @@ import { initTemplate } from './templates/init';
  */
 export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
-  secretField,
+  // secretField,
   initFirstItem,
   identityField,
   magicAuthLink,
@@ -55,7 +55,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   };
 
   console.log('createAuth = ', listKey,
-    secretField,
+    // secretField,
     initFirstItem,
     identityField,
     magicAuthLink,
@@ -139,7 +139,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ gqlNames, identityField, secretField }),
+        src: signinTemplate({ gqlNames, identityField }),
         outputPath: 'pages/signin.js',
       },
     ];
@@ -171,7 +171,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   const extendGraphqlSchema = getSchemaExtension({
     identityField,
     listKey,
-    secretField,
+    // secretField,
     gqlNames,
     initFirstItem,
     passwordResetLink,
@@ -202,12 +202,12 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     // TODO: We could make the secret field optional to disable the standard id/secret auth and password resets (ie. magic links only)
-    const secretFieldConfig = listConfig.fields[secretField];
-    if (secretFieldConfig === undefined) {
-      const s = JSON.stringify(secretField);
-      const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField but no field with that key exists on the list.`;
-      throw new Error(msg);
-    }
+    // const secretFieldConfig = listConfig.fields[secretField];
+    // if (secretFieldConfig === undefined) {
+    //   const s = JSON.stringify(secretField);
+    //   const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField but no field with that key exists on the list.`;
+    //   throw new Error(msg);
+    // }
 
     // TODO: Could also validate initFirstItem.itemData keys?
     for (const field of initFirstItem?.fields || []) {
@@ -275,7 +275,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    */
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
-    console.log('keystoneConfig = ', keystoneConfig)
+
     let ui = keystoneConfig.ui;
     if (!keystoneConfig.ui?.isDisabled) {
       ui = {

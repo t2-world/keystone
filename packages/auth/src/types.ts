@@ -41,7 +41,7 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** The path of the field the identity is stored in; must be text-ish */
   identityField: ListTypeInfo['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
-  secretField: ListTypeInfo['fields'];
+  // secretField: ListTypeInfo['fields'];
   /** The initial user/db seeding functionality */
   initFirstItem?: InitFirstItemConfig<ListTypeInfo>;
   /** Password reset link functionality */
