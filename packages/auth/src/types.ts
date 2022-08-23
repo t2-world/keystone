@@ -3,6 +3,7 @@ import { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types';
 export type AuthGqlNames = {
   CreateInitialInput: string;
   createInitialItem: string;
+  publicAddress: string;
   authenticateItemWithPassword: string;
   ItemAuthenticationWithPasswordResult: string;
   ItemAuthenticationWithPasswordSuccess: string;

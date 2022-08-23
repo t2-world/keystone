@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
-
+import { ethers } from 'ethers';
 import { jsx, H1, Stack, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
@@ -20,6 +20,7 @@ type SigninPageProps = {
   secretField: string;
   mutationName: string;
   successTypename: string;
+  publicAddress: string;
   failureTypename: string;
 };
 
@@ -31,21 +32,17 @@ export const SigninPage = ({
   mutationName,
   successTypename,
   failureTypename,
+  publicAddress
 }: SigninPageProps) => {
+  const [account, setAccount] = useState([])
   const mutation = gql`
-    mutation($identity: String!, $secret: String!) {
-      authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
-        ... on ${successTypename} {
-          item {
-            id
-          }
-        }
-        ... on ${failureTypename} {
-          message
-        }
-      }
+
+  mutation getNonce ($publicAddress: String!){
+    getNonce(publicAddress: $publicAddress) {
+      nonce
     }
-  `;
+  }
+`;
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const [state, setState] = useState({ identity: '', secret: '' });
@@ -55,7 +52,8 @@ export const SigninPage = ({
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const [mutate, { error, loading, data }] = useMutation(mutation);
+  const [getNonce, { error, loading, data }] = useMutation(mutation);
+
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
@@ -75,7 +73,26 @@ export const SigninPage = ({
       </Center>
     );
   }
+const connectToMetamask=async (e:any)=>{
+e.preventDefault();
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
 
+// MetaMask requires requesting permission to connect users accounts
+
+const accounts=await provider.send('eth_requestAccounts', [])
+setAccount(accounts)
+
+// The MetaMask plugin also allows signing transactions to
+// send ether and pay to change state within the blockchain.
+// For this, you need the account signer...
+const signer = provider.getSigner()
+console.log('signer',signer,'accounts',accounts)
+
+  } catch (error) {
+    console.log('error',error);
+  }
+}
   console.log('Please log in')
   return (
     <SigninContainer title="Keystone - Sign In">
@@ -87,10 +104,10 @@ export const SigninPage = ({
 
           if (mode === 'signin') {
             try {
-              let result = await mutate({
+              let result = await getNonce({
                 variables: {
-                  identity: state.identity,
-                  secret: state.secret,
+                  publicAddress: account[0],
+
                 },
               });
               if (result.data.authenticate?.__typename !== successTypename) {
@@ -115,34 +132,7 @@ export const SigninPage = ({
             {data?.authenticate.message}
           </Notice>
         )}
-        <Stack gap="medium">
-          <VisuallyHidden as="label" htmlFor="identity">
-            {identityField}
-          </VisuallyHidden>
-          <TextInput
-            id="identity"
-            name="identity"
-            value={state.identity}
-            onChange={e => setState({ ...state, identity: e.target.value })}
-            placeholder={identityField}
-            ref={identityFieldRef}
-          />
-          {mode === 'signin' && (
-            <Fragment>
-              <VisuallyHidden as="label" htmlFor="password">
-                {secretField}
-              </VisuallyHidden>
-              <TextInput
-                id="password"
-                name="password"
-                value={state.secret}
-                onChange={e => setState({ ...state, secret: e.target.value })}
-                placeholder={secretField}
-                type="password"
-              />
-            </Fragment>
-          )}
-        </Stack>
+      
 
         {mode === 'forgot password' ? (
           <Stack gap="medium" across>
@@ -155,7 +145,8 @@ export const SigninPage = ({
           </Stack>
         ) : (
           <Stack gap="medium" across>
-            <Button
+
+       {account.length>0?     <Button
               weight="bold"
               tone="active"
               isLoading={
@@ -165,12 +156,14 @@ export const SigninPage = ({
               }
               type="submit"
             >
-              Sign In
-            </Button>
-            {/* Disabled until we come up with a complete password reset workflow */}
-            {/* <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
-              Forgot your password?
-            </Button> */}
+              Sign in
+            </Button>:     <Button
+              weight="bold"
+              tone="active"
+              onClick={connectToMetamask}
+            >
+           Connect To Metamask
+            </Button>}
           </Stack>
         )}
       </Stack>
