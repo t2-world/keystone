@@ -11,7 +11,7 @@ export const lists = {
     },
     ui: {
       // Since you can't delete users unless you're an admin, we hide the UI for it
-      hideDelete: ({ session }) => !session?.data.isAdmin,
+
       listView: {
         // These are the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],

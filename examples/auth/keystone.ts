@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
+import { createAuth } from '../../packages/auth/src/index'
 import { lists } from './schema';
 
 /**
@@ -20,7 +20,7 @@ const { withAuth } = createAuth({
   // The identity field is typically a username or email address
   identityField: 'email',
   // The secret field must be a password type field
-  secretField: 'password',
+  // secretField: 'password',
   /* TODO -- review this later, it's not implemented yet and not fully designed (e.g error cases)
   // This ensures than an item is actually able to sign in
   validateItem: ({ item }) => item.isEnabled,
@@ -42,18 +42,7 @@ const { withAuth } = createAuth({
   },
   // Populate session.data based on the authed user
   sessionData: 'name isAdmin',
-  /* TODO -- complete the UI for these features and enable them
-  passwordResetLink: {
-    sendToken(args) {
-      console.log(`Password reset info:`, args);
-    },
-  },
-  magicAuthLink: {
-    sendToken(args) {
-      console.log(`Magic auth info:`, args);
-    },
-  },
-  */
+
 });
 
 // withAuth applies the signin functionality to the keystone config
