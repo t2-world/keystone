@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 /** @jsxRuntime classic */
 /** @jsx jsx */
@@ -35,10 +36,7 @@ export const SigninPage = ({
   failureTypename,
   publicAddress
 }: SigninPageProps) => {
-  const [account, setAccount] = useState([])
-  const [signer, setSigner]=useState()
-const [nonce, setNonce] = useState('')
-const [signature,setSignature] = useState('')
+
   const mutation = gql`
 
   mutation getNonce ($publicAddress: String!){
@@ -78,27 +76,19 @@ const [authenticate, { error, loading, data }] = useMutation(auth);
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const [getNonce, response] = useMutation(mutation);
-const [getSignature,result]=useMutation(signatureMutation)
+  const [getNonce, resspon] = useMutation(mutation);
+const [getSignature,signResult]=useMutation(signatureMutation)
+
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
   const redirect = useRedirect();
-
+  const [account, setAccount] = useState([])
+  const [signer, setSigner]=useState()
+  const [nonce, setNonce] = useState('')
+  const [signature,setSignature] = useState('')
   // This useEffect specifically handles ending up on the signin page from a SPA navigation
-  useEffect(() => {
-    if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push(redirect);
-    }
-  }, [rawKeystone.authenticatedItem, router, redirect]);
 
-  if (rawKeystone.authenticatedItem.state === 'authenticated') {
-    return (
-      <Center fillView>
-        <LoadingDots label="Loading page" size="large" />
-      </Center>
-    );
-  }
 const connectToMetamask=async (e:any)=>{
 e.preventDefault();
   try {
@@ -126,7 +116,7 @@ try {
   console.log('signature',signature)
   // eslint-disable-next-line object-curly-spacing
   // const result=await getSignature({ variables:{publicAddress:account[0],signature:signature} })
-  console.log('result',result)
+  console.log('result',signResult)
 } catch (error) {
   console.log('errr',error)
 }
@@ -135,13 +125,12 @@ try {
 
 
   useEffect(() => {
-if(response.data)
-{setNonce(response.data.getNonce.nonce)
-
+if(resspon.data)
+{setNonce(resspon.data.getNonce.nonce)
 }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[ response.data])
+  },[ resspon.data])
   useEffect(() =>{
 if(nonce)
 {
@@ -149,6 +138,26 @@ if(nonce)
 }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[nonce])
+
+  useEffect(() =>{
+    if(signature)
+    {
+    getSignature({ variables:{ publicAddress:account[0],signature:signature } })
+    }
+  },[signature])
+  useEffect(() => {
+    if (rawKeystone.authenticatedItem.state === 'authenticated') {
+      router.push(redirect);
+    }
+  }, [rawKeystone.authenticatedItem, router, redirect]);
+
+  if (rawKeystone.authenticatedItem.state === 'authenticated') {
+    return (
+      <Center fillView>
+        <LoadingDots label="Loading page" size="large" />
+      </Center>
+    );
+  }
   return (
     <SigninContainer title="Keystone - Sign In">
       <Stack
@@ -162,10 +171,10 @@ if(nonce)
               let result = await authenticate({
                 variables: {
                   identity: account[0],
-                  secret: nonce,
                 },
               });
               if (result.data.authenticate?.__typename !== successTypename) {
+                console.log('resspone',result.data.authenticate)
                 return;
               }
             } catch (err) {
