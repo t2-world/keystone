@@ -6,7 +6,7 @@ import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { jsx, H1, Stack, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-import { TextInput } from '@keystone-ui/fields';
+
 import { Notice } from '@keystone-ui/notice';
 
 import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo';
@@ -48,11 +48,12 @@ const [signature,setSignature] = useState('')
   }
 `;
 
-const signatureMutation = gql`
+const signatureMutation = gql`mutation signatureAuthentication($publicAddress:String!,$signature:String!){
+  signatureAuthentication(publicAddress:$publicAddress,signature:$signature){
+ ...on SignatureWithMessage{
+  message
 
-mutation signatureAuthentication ($publicAddress: String!){
-  signatureAuthentication(publicAddress: $publicAddress) {
-    
+}
   }
 }
 `;
@@ -65,7 +66,7 @@ mutation signatureAuthentication ($publicAddress: String!){
   }, [mode]);
 
   const [getNonce, { error, loading, data }] = useMutation(mutation);
-
+const [getSignature,result]=useMutation(signatureMutation)
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
@@ -96,6 +97,7 @@ const accounts=await provider.send('eth_requestAccounts', [])
 setAccount(accounts)
 const signers =await provider.getSigner()
 console.log('signer',signer,'accounts',accounts)
+// eslint-disable-next-line object-curly-spacing
 await getNonce({variables:{publicAddress:accounts[0] } })
 setSigner(signers)
   } catch (error) {
@@ -109,6 +111,9 @@ try {
   const signature=await signer.signMessage(nonce)
   setSignature(signature)
   console.log('signature',signature)
+  // eslint-disable-next-line object-curly-spacing
+  const result=await getSignature({ variables:{publicAddress:account[0],signature:signature} })
+  console.log('result',result)
 } catch (error) {
   console.log('errr',error)
 }
@@ -118,7 +123,7 @@ try {
 
   useEffect(() => {
 if(data)
-{setNonce(data.getNonce.nonce)} 
+{setNonce(data.getNonce.nonce)}
 {console.log('data',data)}
   },[data])
   return (

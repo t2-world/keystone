@@ -52,6 +52,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
     RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
     RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
+    publicAddress: ''
   };
 
   console.log('createAuth = ', listKey,
