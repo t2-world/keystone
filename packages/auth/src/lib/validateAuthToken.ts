@@ -11,7 +11,7 @@ function sanitiseValidForMinsConfig(input: any): number {
 
 export async function validateAuthToken(
   listKey: string,
-  // secretFieldImpl: SecretFieldImpl,
+  secretFieldImpl: SecretFieldImpl,
   tokenType: 'passwordReset' | 'magicAuth',
   identityField: string,
   identity: string,

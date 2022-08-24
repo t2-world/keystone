@@ -57,15 +57,28 @@ const signatureMutation = gql`mutation signatureAuthentication($publicAddress:St
   }
 }
 `;
-
-
+const auth = gql`
+mutation($identity: String!) {
+  authenticate: ${mutationName}(${identityField}: $identity) {
+    ... on ${successTypename} {
+      item {
+        id
+      }
+    }
+    ... on ${failureTypename} {
+      message
+    }
+  }
+}
+`;
+const [authenticate, { error, loading, data }] = useMutation(auth);
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const identityFieldRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const [getNonce, { error, loading, data }] = useMutation(mutation);
+  const [getNonce, response] = useMutation(mutation);
 const [getSignature,result]=useMutation(signatureMutation)
   const reinitContext = useReinitContext();
   const router = useRouter();
@@ -95,7 +108,7 @@ e.preventDefault();
 
 const accounts=await provider.send('eth_requestAccounts', [])
 setAccount(accounts)
-const signers =await provider.getSigner()
+const signers = provider.getSigner()
 console.log('signer',signer,'accounts',accounts)
 // eslint-disable-next-line object-curly-spacing
 await getNonce({variables:{publicAddress:accounts[0] } })
@@ -105,14 +118,14 @@ setSigner(signers)
   }
 }
 
-const signMessage=async (e:any)=>{
-  e.preventDefault();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+const signMessage=async ()=>{
 try {
   const signature=await signer.signMessage(nonce)
   setSignature(signature)
   console.log('signature',signature)
   // eslint-disable-next-line object-curly-spacing
-  const result=await getSignature({ variables:{publicAddress:account[0],signature:signature} })
+  // const result=await getSignature({ variables:{publicAddress:account[0],signature:signature} })
   console.log('result',result)
 } catch (error) {
   console.log('errr',error)
@@ -122,10 +135,20 @@ try {
 
 
   useEffect(() => {
-if(data)
-{setNonce(data.getNonce.nonce)}
-{console.log('data',data)}
-  },[data])
+if(response.data)
+{setNonce(response.data.getNonce.nonce)
+
+}
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[ response.data])
+  useEffect(() =>{
+if(nonce)
+{
+  signMessage().then(result => result).catch(error =>error.message)
+}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[nonce])
   return (
     <SigninContainer title="Keystone - Sign In">
       <Stack
@@ -136,10 +159,10 @@ if(data)
 
           if (mode === 'signin') {
             try {
-              let result = await getNonce({
+              let result = await authenticate({
                 variables: {
-                  publicAddress: account[0],
-
+                  identity: account[0],
+                  secret: nonce,
                 },
               });
               if (result.data.authenticate?.__typename !== successTypename) {
@@ -185,7 +208,10 @@ if(data)
                 // this is for while the page is loading but the mutation has finished successfully
                 data?.authenticate?.__typename === successTypename
               }
-      onClick={signMessage}
+
+
+              type="submit"
+
             >
               Sign in
             </Button>:     <Button

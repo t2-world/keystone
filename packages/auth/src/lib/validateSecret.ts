@@ -9,8 +9,11 @@ export async function validateSecret(
   // secret: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<{ success: false } | { success: true; item: { id: any; [prop: string]: any } }> {
-  // console.log('validateSecret - ', secretFieldImpl, identityField, identity)
+  console.log('validateSecret - ',  identityField, identity)
   const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
+  // await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack');
+  // eslint-disable-next-line quotes
+  console.log("item",item);
   if (!item) {
     // See "Identity Protection" in the README as to why this is a thing
     // await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack');
@@ -21,6 +24,6 @@ export async function validateSecret(
   //   return { success: true, item };
   // }
    else {
-    return { success: false };
+    return { success: true, item };
   }
 }

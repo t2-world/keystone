@@ -75,7 +75,6 @@ export function getBaseAuthSchema<I extends string, S extends string>({
 
           const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
-            // secretFieldImpl,
             identityField,
             identity,
             // secretField,

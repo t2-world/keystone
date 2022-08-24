@@ -187,6 +187,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    */
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
     const listConfig = keystoneConfig.lists[listKey];
+
+
+    console.log(listConfig,'config validation')
     if (listConfig === undefined) {
       const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
       throw new Error(msg);
