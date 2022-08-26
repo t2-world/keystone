@@ -7,14 +7,16 @@ import { validateSecret } from '../lib/validateSecret';
 export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
-  // secretField,
+  signature,
+
   gqlNames,
   // secretFieldImpl,
   base,
 }: {
   listKey: string;
   identityField: I;
-  // secretField: S;
+  signature: S;
+
   gqlNames: AuthGqlNames;
   // secretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
@@ -66,9 +68,10 @@ export function getBaseAuthSchema<I extends string, S extends string>({
         type: AuthenticationResult,
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
-          // [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          signature: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity,  }, context) {
+        async resolve(root, { [identityField]: identity, signature:signature }, context) {
+console.log('args', graphql.arg({ type: graphql.nonNull(graphql.String) }))
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
@@ -77,8 +80,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           const result = await validateSecret(
             identityField,
             identity,
-            // secretField,
-            // secret,
+            signature,
             dbItemAPI
           );
 

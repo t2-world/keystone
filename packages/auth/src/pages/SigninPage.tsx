@@ -56,8 +56,8 @@ const signatureMutation = gql`mutation signatureAuthentication($publicAddress:St
 }
 `;
 const auth = gql`
-mutation($identity: String!) {
-  authenticate: ${mutationName}(${identityField}: $identity) {
+mutation($identity: String!,$signature:String!) {
+  authenticate: ${mutationName}(${identityField}: $identity,signature:$signature) {
     ... on ${successTypename} {
       item {
         id
@@ -99,7 +99,7 @@ e.preventDefault();
 const accounts=await provider.send('eth_requestAccounts', [])
 setAccount(accounts)
 const signers = provider.getSigner()
-console.log('signer',signer,'accounts',accounts)
+// console.log('signer',signer,'accounts',accounts)
 // eslint-disable-next-line object-curly-spacing
 await getNonce({variables:{publicAddress:accounts[0] } })
 setSigner(signers)
@@ -113,15 +113,15 @@ const signMessage=async ()=>{
 try {
   const signature=await signer.signMessage(nonce)
   setSignature(signature)
-  console.log('signature',signature)
+  // console.log('signature',signature)
   // eslint-disable-next-line object-curly-spacing
   // const result=await getSignature({ variables:{publicAddress:account[0],signature:signature} })
-  console.log('result',signResult)
+  // console.log('result',signResult)
 } catch (error) {
   console.log('errr',error)
 }
   }
-  console.log('Please log in')
+  // console.log('Please log in')
 
 
   useEffect(() => {
@@ -139,12 +139,12 @@ if(nonce)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[nonce])
 
-  useEffect(() =>{
-    if(signature)
-    {
-    getSignature({ variables:{ publicAddress:account[0],signature:signature } })
-    }
-  },[signature])
+  // useEffect(() =>{
+  //   if(signature)
+  //   {
+  //   getSignature({ variables:{ publicAddress:account[0],signature:signature } })
+  //   }
+  // },[signature])
   useEffect(() => {
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
       router.push(redirect);
@@ -171,6 +171,7 @@ if(nonce)
               let result = await authenticate({
                 variables: {
                   identity: account[0],
+                  signature:signature
                 },
               });
               if (result.data.authenticate?.__typename !== successTypename) {

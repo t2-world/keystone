@@ -24,8 +24,8 @@ export async function validateAuthToken(
 > {
   const result = await validateSecret(
     // secretFieldImpl,
-    // identityField,
-    // identity,
+    identityField,
+    identity,
     `${tokenType}Token`,
     token,
     dbItemAPI

@@ -4,6 +4,7 @@ export type AuthGqlNames = {
   CreateInitialInput: string;
   createInitialItem: string;
   publicAddress: string;
+  signature: string;
   authenticateItemWithPassword: string;
   ItemAuthenticationWithPasswordResult: string;
   ItemAuthenticationWithPasswordSuccess: string;
