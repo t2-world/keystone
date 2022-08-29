@@ -70,19 +70,14 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           signature: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity, signature:signature }, context) {
-console.log('args', graphql.arg({ type: graphql.nonNull(graphql.String) }))
+        async resolve(root, { [identityField]: identity, signature: signature }, context) {
+          console.log('args', graphql.arg({ type: graphql.nonNull(graphql.String) }));
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
 
           const dbItemAPI = context.sudo().db[listKey];
-          const result = await validateSecret(
-            identityField,
-            identity,
-            signature,
-            dbItemAPI
-          );
+          const result = await validateSecret(identityField, identity, signature, dbItemAPI);
 
           if (!result.success) {
             return { code: 'FAILURE', message: 'Authentication failed.' };

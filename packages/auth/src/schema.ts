@@ -18,7 +18,7 @@ import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 function assertSecretFieldImpl(
   impl: any,
-  listKey: string,
+  listKey: string
   // secretField: string
 ): asserts impl is SecretFieldImpl {
   if (

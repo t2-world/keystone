@@ -75,11 +75,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           // [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(
-          rootVal,
-          { [identityField]: identity, token },
-          context
-        ) {
+        async resolve(rootVal, { [identityField]: identity, token }, context) {
           const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(

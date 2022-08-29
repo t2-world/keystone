@@ -34,28 +34,17 @@ export const SigninPage = ({
   mutationName,
   successTypename,
   failureTypename,
-  publicAddress
+  publicAddress,
 }: SigninPageProps) => {
-
   const mutation = gql`
-
-  mutation getNonce ($publicAddress: String!){
-    getNonce(publicAddress: $publicAddress) {
-      nonce
+    mutation getNonce($publicAddress: String!) {
+      getNonce(publicAddress: $publicAddress) {
+        nonce
+      }
     }
-  }
-`;
+  `;
 
-const signatureMutation = gql`mutation signatureAuthentication($publicAddress:String!,$signature:String!){
-  signatureAuthentication(publicAddress:$publicAddress,signature:$signature){
- ...on SignatureWithMessage{
-  message
-
-}
-  }
-}
-`;
-const auth = gql`
+  const auth = gql`
 mutation($identity: String!,$signature:String!) {
   authenticate: ${mutationName}(${identityField}: $identity,signature:$signature) {
     ... on ${successTypename} {
@@ -69,7 +58,7 @@ mutation($identity: String!,$signature:String!) {
   }
 }
 `;
-const [authenticate, { error, loading, data }] = useMutation(auth);
+  const [authenticate, { error, loading, data }] = useMutation(auth);
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const identityFieldRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -77,74 +66,64 @@ const [authenticate, { error, loading, data }] = useMutation(auth);
   }, [mode]);
 
   const [getNonce, resspon] = useMutation(mutation);
-const [getSignature,signResult]=useMutation(signatureMutation)
+
 
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
   const redirect = useRedirect();
-  const [account, setAccount] = useState([])
-  const [signer, setSigner]=useState()
-  const [nonce, setNonce] = useState('')
-  const [signature,setSignature] = useState('')
+  const [account, setAccount] = useState([]);
+  const [signer, setSigner] = useState();
+  const [nonce, setNonce] = useState('');
+  const [signature, setSignature] = useState('');
   // This useEffect specifically handles ending up on the signin page from a SPA navigation
 
-const connectToMetamask=async (e:any)=>{
-e.preventDefault();
-  try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+  const connectToMetamask = async (e: any) => {
+    e.preventDefault();
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-// MetaMask requires requesting permission to connect users accounts
+      // MetaMask requires requesting permission to connect users accounts
 
-const accounts=await provider.send('eth_requestAccounts', [])
-setAccount(accounts)
-const signers = provider.getSigner()
-// console.log('signer',signer,'accounts',accounts)
-// eslint-disable-next-line object-curly-spacing
-await getNonce({variables:{publicAddress:accounts[0] } })
-setSigner(signers)
-  } catch (error) {
-    console.log('error',error);
-  }
-}
+      const accounts = await provider.send('eth_requestAccounts', []);
+      setAccount(accounts);
+      const signers = provider.getSigner();
+      // console.log('signer',signer,'accounts',accounts)
+      // eslint-disable-next-line object-curly-spacing
+      await getNonce({ variables: { publicAddress: accounts[0] } });
+      setSigner(signers);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-const signMessage=async ()=>{
-try {
-  const signature=await signer.signMessage(nonce)
-  setSignature(signature)
-  // console.log('signature',signature)
-  // eslint-disable-next-line object-curly-spacing
-  // const result=await getSignature({ variables:{publicAddress:account[0],signature:signature} })
-  // console.log('result',signResult)
-} catch (error) {
-  console.log('errr',error)
-}
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const signMessage = async () => {
+    try {
+      const signature = await signer.signMessage(nonce);
+      setSignature(signature);
+    } catch (error) {
+      console.log('errr', error);
+    }
+  };
   // console.log('Please log in')
 
-
   useEffect(() => {
-if(resspon.data)
-{setNonce(resspon.data.getNonce.nonce)
-}
+    if (resspon.data) {
+      setNonce(resspon.data.getNonce.nonce);
+    }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[ resspon.data])
-  useEffect(() =>{
-if(nonce)
-{
-  signMessage().then(result => result).catch(error =>error.message)
-}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[nonce])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resspon.data]);
+  useEffect(() => {
+    if (nonce) {
+      signMessage()
+        .then(result => result)
+        .catch(error => error.message);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nonce]);
 
-  // useEffect(() =>{
-  //   if(signature)
-  //   {
-  //   getSignature({ variables:{ publicAddress:account[0],signature:signature } })
-  //   }
-  // },[signature])
   useEffect(() => {
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
       router.push(redirect);
@@ -171,11 +150,11 @@ if(nonce)
               let result = await authenticate({
                 variables: {
                   identity: account[0],
-                  signature:signature
+                  signature: signature,
                 },
               });
               if (result.data.authenticate?.__typename !== successTypename) {
-                console.log('resspone',result.data.authenticate)
+                console.log('resspone', result.data.authenticate);
                 return;
               }
             } catch (err) {
@@ -209,28 +188,24 @@ if(nonce)
           </Stack>
         ) : (
           <Stack gap="medium" across>
-
-       {account.length>0?     <Button
-              weight="bold"
-              tone="active"
-              isLoading={
-                loading ||
-                // this is for while the page is loading but the mutation has finished successfully
-                data?.authenticate?.__typename === successTypename
-              }
-
-
-              type="submit"
-
-            >
-              Sign in
-            </Button>:     <Button
-              weight="bold"
-              tone="active"
-              onClick={connectToMetamask}
-            >
-           Connect To Metamask
-            </Button>}
+            {account.length > 0 ? (
+              <Button
+                weight="bold"
+                tone="active"
+                isLoading={
+                  loading ||
+                  // this is for while the page is loading but the mutation has finished successfully
+                  data?.authenticate?.__typename === successTypename
+                }
+                type="submit"
+              >
+                Sign in
+              </Button>
+            ) : (
+              <Button weight="bold" tone="active" onClick={connectToMetamask}>
+                Connect To Metamask
+              </Button>
+            )}
           </Stack>
         )}
       </Stack>

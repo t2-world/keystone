@@ -351,7 +351,7 @@ The data resolving steps are applied in the following order:
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Hooks Guide"
 href="/docs/guides/hooks" %}
 Learn how to use Hooks within your schema to extend Keystone’s powerful CRUD GraphQL APIs with your own business logic.

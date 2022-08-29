@@ -1025,12 +1025,12 @@ export default config({
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Schema API Reference"
 href="/docs/apis/schema" %}
-The API to configure your  options used with the `list()` function.
+The API to configure your options used with the `list()` function.
 {% /well %}
-{% well 
+{% well
 heading="GraphQL API Reference"
 href="/docs/apis/graphql" %}
 A complete CRUD (create, read, update, delete) GraphQL API derived from the list and field names you configure in your system.

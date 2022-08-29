@@ -233,20 +233,20 @@ This option can be individually overridden by the `graphql.description` or `ui.d
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Fields API Reference"
 href="/docs/apis/fields" %}
 Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
 {% /well %}
-{% well 
+{% well
 heading="Config API Reference"
 href="/docs/apis/config" %}
 The API to configure all the parts parts of your Keystone system.
 {% /well %}
-{% well 
+{% well
 heading="Example Project: Blog"
-href="https://github.com/keystonejs/keystone/tree/main/examples/blog"
-target="_blank" %}
+href="<https://github.com/keystonejs/keystone/tree/main/examples/blog>"
+target="\_blank" %}
 A basic Blog schema with Posts and Authors. Use this as a starting place for learning how to use Keystone. It’s also a starter for other feature projects.
 {% /well %}
 {% /related-content %}

@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '../../packages/auth/src/index'
+import { createAuth } from '../../packages/auth/src/index';
 import { lists } from './schema';
 
 /**
@@ -42,7 +42,6 @@ const { withAuth } = createAuth({
   },
   // Populate session.data based on the authed user
   sessionData: 'name isAdmin',
-
 });
 
 // withAuth applies the signin functionality to the keystone config

@@ -52,16 +52,19 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
     RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
     RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
-    publicAddress: ''
+    publicAddress: '',
   };
 
-  console.log('createAuth = ', listKey,
+  console.log(
+    'createAuth = ',
+    listKey,
     // secretField,
     initFirstItem,
     identityField,
     magicAuthLink,
     passwordResetLink,
-    sessionData = 'id')
+    (sessionData = 'id')
+  );
 
   /**
    * fields
@@ -188,8 +191,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
     const listConfig = keystoneConfig.lists[listKey];
 
-
-    console.log(listConfig,'config validation')
+    console.log(listConfig, 'config validation');
     if (listConfig === undefined) {
       const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
       throw new Error(msg);
