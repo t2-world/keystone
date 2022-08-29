@@ -22,7 +22,7 @@ import { initTemplate } from './templates/init';
  */
 export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
-  // secretField,
+
   initFirstItem,
   identityField,
   magicAuthLink,
@@ -53,19 +53,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
     RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
     publicAddress: '',
+    signature: ''
   };
-
-  console.log(
-    'createAuth = ',
-    listKey,
-    // secretField,
-    initFirstItem,
-    identityField,
-    magicAuthLink,
-    passwordResetLink,
-    (sessionData = 'id')
-  );
-
   /**
    * fields
    *
@@ -190,8 +179,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    */
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
     const listConfig = keystoneConfig.lists[listKey];
-
-    console.log(listConfig, 'config validation');
     if (listConfig === undefined) {
       const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
       throw new Error(msg);

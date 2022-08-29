@@ -1,6 +1,6 @@
 import type { BaseItem } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, SecretFieldImpl } from '../types';
+import { AuthGqlNames } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
 
@@ -8,9 +8,8 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   signature,
-
   gqlNames,
-  // secretFieldImpl,
+
   base,
 }: {
   listKey: string;
@@ -18,7 +17,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   signature: S;
 
   gqlNames: AuthGqlNames;
-  // secretFieldImpl: SecretFieldImpl;
+
   base: graphql.BaseSchemaMeta;
 }) {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
@@ -71,7 +70,6 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           signature: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
         async resolve(root, { [identityField]: identity, signature: signature }, context) {
-          console.log('args', graphql.arg({ type: graphql.nonNull(graphql.String) }));
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }

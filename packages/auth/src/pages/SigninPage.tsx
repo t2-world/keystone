@@ -67,7 +67,6 @@ mutation($identity: String!,$signature:String!) {
 
   const [getNonce, resspon] = useMutation(mutation);
 
-
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
