@@ -9,7 +9,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
     "@hapi/iron": "^6.0.0",
-    "@keystone-6/auth": "^4.0.1",
+    "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
     "@keystone-6/session-store-redis": "*",
