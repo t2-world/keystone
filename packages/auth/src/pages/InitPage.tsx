@@ -55,7 +55,7 @@ const Welcome = ({ value }: { value: any }) => {
           body: JSON.stringify({
             name: value.username,
             email,
-            source: '@keystone-6/auth-with-metamask InitPage',
+            source: '@keystone-6/auth InitPage',
           }),
         })
           .then(res => {

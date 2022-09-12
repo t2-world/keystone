@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-6/auth-with-metamask",
+  "name": "@keystone-6/auth",
   "version": "4.0.1",
   "license": "MIT",
-  "main": "dist/keystone-6-auth-with-metamask.cjs.js",
-  "module": "dist/keystone-6-auth-with-metamask.esm.js",
+  "main": "dist/keystone-6-auth.cjs.js",
+  "module": "dist/keystone-6-auth.esm.js",
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/button": "^7.0.1",
