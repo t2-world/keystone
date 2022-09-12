@@ -18,14 +18,14 @@ export function getMagicAuthLinkSchema<I extends string>({
   identityField,
   gqlNames,
   magicAuthLink,
-  // magicAuthTokenSecretFieldImpl,
+  magicAuthTokenSecretFieldImpl,
   base,
 }: {
   listKey: string;
   identityField: I;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
-  // magicAuthTokenSecretFieldImpl: SecretFieldImpl;
+  magicAuthTokenSecretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
 }) {
   const RedeemItemMagicAuthTokenFailure = graphql.object<{
@@ -98,7 +98,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             listKey,
-            // magicAuthTokenSecretFieldImpl,
+            magicAuthTokenSecretFieldImpl,
             tokenType,
             identityField,
             identity,

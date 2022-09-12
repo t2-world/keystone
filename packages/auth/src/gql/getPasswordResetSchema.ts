@@ -15,14 +15,14 @@ const PasswordResetRedemptionErrorCode = graphql.enum({
 export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
   identityField,
-  // secretField,
+  secretField,
   gqlNames,
   passwordResetLink,
   passwordResetTokenSecretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
-  // secretField: S;
+  secretField: S;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
   passwordResetTokenSecretFieldImpl: SecretFieldImpl;
@@ -73,14 +73,18 @@ export function getPasswordResetSchema<I extends string, S extends string>({
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
-          // [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(rootVal, { [identityField]: identity, token }, context) {
+        async resolve(
+          rootVal,
+          { [identityField]: identity, token, [secretField]: secret },
+          context
+        ) {
           const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             listKey,
-            // passwordResetTokenSecretFieldImpl,
+            passwordResetTokenSecretFieldImpl,
             tokenType,
             identityField,
             identity,
@@ -104,10 +108,10 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
-          // await dbItemAPI.updateOne({
-          //   where: { id: itemId },
-          //   data: { [secretField]: secret },
-          // });
+          await dbItemAPI.updateOne({
+            where: { id: itemId },
+            data: { [secretField]: secret },
+          });
 
           return null;
         },
@@ -125,7 +129,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             listKey,
-            // passwordResetTokenSecretFieldImpl,
+            passwordResetTokenSecretFieldImpl,
             tokenType,
             identityField,
             identity,

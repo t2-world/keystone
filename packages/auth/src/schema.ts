@@ -18,8 +18,8 @@ import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 function assertSecretFieldImpl(
   impl: any,
-  listKey: string
-  // secretField: string
+  listKey: string,
+  secretField: string
 ): asserts impl is SecretFieldImpl {
   if (
     !impl ||
@@ -27,23 +27,24 @@ function assertSecretFieldImpl(
     impl.compare.length < 2 ||
     typeof impl.generateHash !== 'function'
   ) {
-    // const s = JSON.stringify(secretField);
-    let msg = `A createAuth() invocation for the "${listKey}" list specifies as its secretField, but the field type doesn't implement the required functionality.`;
+    const s = JSON.stringify(secretField);
+    let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, but the field type doesn't implement the required functionality.`;
     throw new Error(msg);
   }
 }
 
 export function getSecretFieldImpl(schema: GraphQLSchema, listKey: string, fieldKey: string) {
+  return {};
   const gqlOutputType = assertObjectType(schema.getType(listKey));
   const secretFieldImpl = gqlOutputType.getFields()?.[fieldKey].extensions?.keystoneSecretField;
-  // assertSecretFieldImpl(secretFieldImpl, listKey, fieldKey);
+  assertSecretFieldImpl(secretFieldImpl, listKey, fieldKey);
   return secretFieldImpl;
 }
 
 export const getSchemaExtension = ({
   identityField,
   listKey,
-  // secretField,
+  secretField,
   gqlNames,
   initFirstItem,
   passwordResetLink,
@@ -52,7 +53,7 @@ export const getSchemaExtension = ({
 }: {
   identityField: string;
   listKey: string;
-  // secretField: string;
+  secretField: string;
   gqlNames: AuthGqlNames;
   initFirstItem?: InitFirstItemConfig<any>;
   passwordResetLink?: AuthTokenTypeConfig;
@@ -78,9 +79,9 @@ export const getSchemaExtension = ({
     const baseSchema = getBaseAuthSchema({
       identityField,
       listKey,
-      // secretField,
+      secretField,
       gqlNames,
-      // secretFieldImpl: getSecretFieldImpl(base.schema, listKey,'test'),
+      secretFieldImpl: getSecretFieldImpl(base.schema, listKey, secretField),
       base,
     });
 
@@ -127,7 +128,7 @@ export const getSchemaExtension = ({
         getPasswordResetSchema({
           identityField,
           listKey,
-          // secretField,
+          secretField,
           passwordResetLink,
           gqlNames,
           passwordResetTokenSecretFieldImpl: getSecretFieldImpl(
@@ -142,7 +143,7 @@ export const getSchemaExtension = ({
           listKey,
           magicAuthLink,
           gqlNames,
-          // magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
+          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
           base,
         }),
     ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);

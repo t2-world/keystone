@@ -35,7 +35,7 @@ const Welcome = ({ value }: { value: any }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const redirect = useRedirect();
-  console.log('Welcome');
+
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);

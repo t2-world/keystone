@@ -23,7 +23,7 @@ export async function validateAuthToken(
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
   const result = await validateSecret(
-    // secretFieldImpl,
+    secretFieldImpl,
     identityField,
     identity,
     `${tokenType}Token`,

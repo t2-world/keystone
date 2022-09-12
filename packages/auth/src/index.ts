@@ -22,7 +22,7 @@ import { initTemplate } from './templates/init';
  */
 export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
-
+  secretField,
   initFirstItem,
   identityField,
   magicAuthLink,
@@ -52,9 +52,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
     RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
     RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
-    publicAddress: '',
-    signature: ''
   };
+
   /**
    * fields
    *
@@ -132,7 +131,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ gqlNames, identityField }),
+        src: signinTemplate({ gqlNames, identityField, secretField }),
         outputPath: 'pages/signin.js',
       },
     ];
@@ -164,7 +163,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   const extendGraphqlSchema = getSchemaExtension({
     identityField,
     listKey,
-    // secretField,
+    secretField,
     gqlNames,
     initFirstItem,
     passwordResetLink,
@@ -268,7 +267,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    */
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
-
     let ui = keystoneConfig.ui;
     if (!keystoneConfig.ui?.isDisabled) {
       ui = {
