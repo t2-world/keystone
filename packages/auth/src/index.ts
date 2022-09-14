@@ -8,8 +8,6 @@ import {
   SessionStrategy,
   BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types';
-import { password, timestamp } from '@keystone-6/core/fields';
-
 import { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
@@ -23,8 +21,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
   secretField,
   identityField,
-  magicAuthLink,
-  passwordResetLink,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
   const gqlNames: AuthGqlNames = {
@@ -33,48 +29,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
     ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess`,
     ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure`,
-    // Initial data
-    CreateInitialInput: `CreateInitial${listKey}Input`,
-    createInitialItem: `createInitial${listKey}`,
-    // Password reset
-    sendItemPasswordResetLink: `send${listKey}PasswordResetLink`,
-    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult`,
-    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken`,
-    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult`,
-    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken`,
-    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult`,
-    // Magic auth
-    sendItemMagicAuthLink: `send${listKey}MagicAuthLink`,
-    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult`,
-    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken`,
-    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
-    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
-    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
-  };
-
-  /**
-   * fields
-   *
-   * Fields added to the auth list.
-   */
-  const fieldConfig = {
-    access: () => false,
-    ui: {
-      createView: { fieldMode: 'hidden' },
-      itemView: { fieldMode: 'hidden' },
-      listView: { fieldMode: 'hidden' },
-    },
-  } as const;
-  // These field names have to follow this format so that for e.g
-  // validateAuthToken() behaves correctly.
-  const tokenFields = (tokenType: 'passwordReset' | 'magicAuth') => ({
-    [`${tokenType}Token`]: password({ ...fieldConfig }),
-    [`${tokenType}IssuedAt`]: timestamp({ ...fieldConfig }),
-    [`${tokenType}RedeemedAt`]: timestamp({ ...fieldConfig }),
-  });
-  const fields = {
-    ...(passwordResetLink && tokenFields('passwordReset')),
-    ...(magicAuthLink && tokenFields('magicAuth')),
   };
 
   /**
@@ -142,8 +96,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     listKey,
     secretField,
     gqlNames,
-    passwordResetLink,
-    magicAuthLink,
     sessionData,
   });
 
@@ -278,7 +230,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       // work factor for the tokens, etc.) without abandoning the withAuth() interface
       lists: {
         ...keystoneConfig.lists,
-        [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
+        [listKey]: { ...listConfig, fields: { ...listConfig.fields } },
       },
       extendGraphqlSchema: existingExtendGraphQLSchema
         ? schema => existingExtendGraphQLSchema(extendGraphqlSchema(schema))
@@ -292,7 +244,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     // roll their own. This is pending a review of the use cases this might be
     // appropriate for, along with documentation and testing.
     // ui: { enableSessionItem: true, pageMiddleware, getAdditionalFiles, publicPages },
-    // fields,
     // extendGraphqlSchema,
     // validateConfig,
   };

@@ -10,10 +10,8 @@ import {
   validate,
 } from 'graphql';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from './types';
+import { AuthGqlNames, SecretFieldImpl } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 function assertSecretFieldImpl(
   impl: any,
@@ -45,16 +43,12 @@ export const getSchemaExtension = ({
   listKey,
   secretField,
   gqlNames,
-  passwordResetLink,
-  magicAuthLink,
   sessionData,
 }: {
   identityField: string;
   listKey: string;
   secretField: string;
   gqlNames: AuthGqlNames;
-  passwordResetLink?: AuthTokenTypeConfig;
-  magicAuthLink?: AuthTokenTypeConfig;
   sessionData: string;
 }): ExtendGraphqlSchema =>
   graphql.extend(base => {
@@ -110,29 +104,5 @@ export const getSchemaExtension = ({
       );
     }
 
-    return [
-      baseSchema.extension,
-      passwordResetLink &&
-        getPasswordResetSchema({
-          identityField,
-          listKey,
-          secretField,
-          passwordResetLink,
-          gqlNames,
-          passwordResetTokenSecretFieldImpl: getSecretFieldImpl(
-            base.schema,
-            listKey,
-            'passwordResetToken'
-          ),
-        }),
-      magicAuthLink &&
-        getMagicAuthLinkSchema({
-          identityField,
-          listKey,
-          magicAuthLink,
-          gqlNames,
-          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
-          base,
-        }),
-    ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
+    return [baseSchema.extension].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
   });

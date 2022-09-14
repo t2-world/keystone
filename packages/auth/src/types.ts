@@ -1,38 +1,10 @@
-import { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types';
+import { BaseListTypeInfo } from '@keystone-6/core/types';
 
 export type AuthGqlNames = {
-  CreateInitialInput: string;
-  createInitialItem: string;
   authenticateItemWithPassword: string;
   ItemAuthenticationWithPasswordResult: string;
   ItemAuthenticationWithPasswordSuccess: string;
   ItemAuthenticationWithPasswordFailure: string;
-  sendItemPasswordResetLink: string;
-  SendItemPasswordResetLinkResult: string;
-  validateItemPasswordResetToken: string;
-  ValidateItemPasswordResetTokenResult: string;
-  redeemItemPasswordResetToken: string;
-  RedeemItemPasswordResetTokenResult: string;
-  sendItemMagicAuthLink: string;
-  SendItemMagicAuthLinkResult: string;
-  redeemItemMagicAuthToken: string;
-  RedeemItemMagicAuthTokenResult: string;
-  RedeemItemMagicAuthTokenSuccess: string;
-  RedeemItemMagicAuthTokenFailure: string;
-};
-
-export type SendTokenFn = (args: {
-  itemId: string | number | bigint;
-  identity: string;
-  token: string;
-  context: KeystoneContext;
-}) => Promise<void> | void;
-
-export type AuthTokenTypeConfig = {
-  /** Called when a user should be sent the magic signin token they requested */
-  sendToken: SendTokenFn;
-  /** How long do tokens stay valid for from time of issue, in minutes **/
-  tokensValidForMins?: number;
 };
 
 export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
@@ -42,15 +14,9 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   identityField: ListTypeInfo['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: ListTypeInfo['fields'];
-  /** Password reset link functionality */
-  passwordResetLink?: AuthTokenTypeConfig;
-  /** "Magic link" functionality */
-  magicAuthLink?: AuthTokenTypeConfig;
   /** Session data population */
   sessionData?: string;
 };
-
-export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_REDEEMED';
 
 export type SecretFieldImpl = {
   generateHash: (secret: string) => Promise<string>;
