@@ -13,7 +13,6 @@ import { password, timestamp } from '@keystone-6/core/fields';
 import { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
-import { initTemplate } from './templates/init';
 
 /**
  * createAuth function
@@ -23,7 +22,6 @@ import { initTemplate } from './templates/init';
 export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
   secretField,
-  initFirstItem,
   identityField,
   magicAuthLink,
   passwordResetLink,
@@ -85,8 +83,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * Should be added to the ui.pageMiddleware stack.
    *
    * Redirects:
-   *  - from the signin or init pages to the index when a valid session is present
-   *  - to the init page when initFirstItem is configured, and there are no user in the database
+   *  - from the signin page to the index when a valid session is present
    *  - to the signin page when no valid session is present
    */
   const pageMiddleware: AdminUIConfig<BaseKeystoneTypeInfo>['pageMiddleware'] = async ({
@@ -97,20 +94,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     const pathname = url.parse(req!.url!).pathname!;
 
     if (isValidSession) {
-      if (pathname === '/signin' || (initFirstItem && pathname === '/init')) {
+      if (pathname === '/signin') {
         return { kind: 'redirect', to: '/' };
       }
       return;
-    }
-
-    if (!session && initFirstItem) {
-      const count = await context.sudo().query[listKey].count({});
-      if (count === 0) {
-        if (pathname !== '/init') {
-          return { kind: 'redirect', to: '/init' };
-        }
-        return;
-      }
     }
 
     if (!session && pathname !== '/signin') {
@@ -125,7 +112,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * This function adds files to be generated into the Admin UI build. Must be added to the
    * ui.getAdditionalFiles config.
    *
-   * The signin page is always included, and the init page is included when initFirstItem is set
+   * The signin page is always included
    */
   const getAdditionalFiles = () => {
     let filesToWrite: AdminFileToWrite[] = [
@@ -135,13 +122,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         outputPath: 'pages/signin.js',
       },
     ];
-    if (initFirstItem) {
-      filesToWrite.push({
-        mode: 'write',
-        src: initTemplate({ listKey, initFirstItem }),
-        outputPath: 'pages/init.js',
-      });
-    }
     return filesToWrite;
   };
 
@@ -151,9 +131,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * Must be added to the ui.publicPages config
    */
   const publicPages = ['/signin'];
-  if (initFirstItem) {
-    publicPages.push('/init');
-  }
 
   /**
    * extendGraphqlSchema
@@ -165,7 +142,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     listKey,
     secretField,
     gqlNames,
-    initFirstItem,
     passwordResetLink,
     magicAuthLink,
     sessionData,
@@ -200,15 +176,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     //   const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField but no field with that key exists on the list.`;
     //   throw new Error(msg);
     // }
-
-    // TODO: Could also validate initFirstItem.itemData keys?
-    for (const field of initFirstItem?.fields || []) {
-      if (listConfig.fields[field] === undefined) {
-        const f = JSON.stringify(field);
-        const msg = `A createAuth() invocation for the "${listKey}" list specifies the field ${f} in initFirstItem.fields array but no field with that key exist on the list.`;
-        throw new Error(msg);
-      }
-    }
   };
 
   /**

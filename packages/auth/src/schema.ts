@@ -10,9 +10,8 @@ import {
   validate,
 } from 'graphql';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
+import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
-import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
 import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
 import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
@@ -46,7 +45,6 @@ export const getSchemaExtension = ({
   listKey,
   secretField,
   gqlNames,
-  initFirstItem,
   passwordResetLink,
   magicAuthLink,
   sessionData,
@@ -55,7 +53,6 @@ export const getSchemaExtension = ({
   listKey: string;
   secretField: string;
   gqlNames: AuthGqlNames;
-  initFirstItem?: InitFirstItemConfig<any>;
   passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
   sessionData: string;
@@ -115,15 +112,6 @@ export const getSchemaExtension = ({
 
     return [
       baseSchema.extension,
-      initFirstItem &&
-        getInitFirstItemSchema({
-          listKey,
-          fields: initFirstItem.fields,
-          itemData: initFirstItem.itemData,
-          gqlNames,
-          graphQLSchema: base.schema,
-          ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
-        }),
       passwordResetLink &&
         getPasswordResetSchema({
           identityField,
