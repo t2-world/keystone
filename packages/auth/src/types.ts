@@ -1,10 +1,10 @@
 import { BaseListTypeInfo } from '@keystone-6/core/types';
 
 export type AuthGqlNames = {
-  authenticateItemWithPassword: string;
-  ItemAuthenticationWithPasswordResult: string;
-  ItemAuthenticationWithPasswordSuccess: string;
-  ItemAuthenticationWithPasswordFailure: string;
+  authenticateItemWithMetamask: string;
+  ItemAuthenticationWithMetamaskResult: string;
+  ItemAuthenticationWithMetamaskSuccess: string;
+  ItemAuthenticationWithMetamaskFailure: string;
 };
 
 export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {

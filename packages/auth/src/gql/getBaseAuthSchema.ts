@@ -19,30 +19,30 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   secretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
 }) {
-  const ItemAuthenticationWithPasswordSuccess = graphql.object<{
+  const ItemAuthenticationWithMetamaskSuccess = graphql.object<{
     sessionToken: string;
     item: BaseItem;
   }>()({
-    name: gqlNames.ItemAuthenticationWithPasswordSuccess,
+    name: gqlNames.ItemAuthenticationWithMetamaskSuccess,
     fields: {
       sessionToken: graphql.field({ type: graphql.nonNull(graphql.String) }),
       item: graphql.field({ type: graphql.nonNull(base.object(listKey)) }),
     },
   });
-  const ItemAuthenticationWithPasswordFailure = graphql.object<{ message: string }>()({
-    name: gqlNames.ItemAuthenticationWithPasswordFailure,
+  const ItemAuthenticationWithMetamaskFailure = graphql.object<{ message: string }>()({
+    name: gqlNames.ItemAuthenticationWithMetamaskFailure,
     fields: {
       message: graphql.field({ type: graphql.nonNull(graphql.String) }),
     },
   });
   const AuthenticationResult = graphql.union({
-    name: gqlNames.ItemAuthenticationWithPasswordResult,
-    types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
+    name: gqlNames.ItemAuthenticationWithMetamaskResult,
+    types: [ItemAuthenticationWithMetamaskSuccess, ItemAuthenticationWithMetamaskFailure],
     resolveType(val) {
       if ('sessionToken' in val) {
-        return gqlNames.ItemAuthenticationWithPasswordSuccess;
+        return gqlNames.ItemAuthenticationWithMetamaskSuccess;
       }
-      return gqlNames.ItemAuthenticationWithPasswordFailure;
+      return gqlNames.ItemAuthenticationWithMetamaskFailure;
     },
   });
   const extension = {
@@ -62,7 +62,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       }),
     },
     mutation: {
-      [gqlNames.authenticateItemWithPassword]: graphql.field({
+      [gqlNames.authenticateItemWithMetamask]: graphql.field({
         type: AuthenticationResult,
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
@@ -97,5 +97,5 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       }),
     },
   };
-  return { extension, ItemAuthenticationWithPasswordSuccess };
+  return { extension, ItemAuthenticationWithMetamaskSuccess };
 }

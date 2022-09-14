@@ -15,9 +15,9 @@ export const signinTemplate = ({
 export default getSigninPage(${JSON.stringify({
     identityField: identityField,
     secretField: secretField,
-    mutationName: gqlNames.authenticateItemWithPassword,
-    successTypename: gqlNames.ItemAuthenticationWithPasswordSuccess,
-    failureTypename: gqlNames.ItemAuthenticationWithPasswordFailure,
+    mutationName: gqlNames.authenticateItemWithMetamask,
+    successTypename: gqlNames.ItemAuthenticationWithMetamaskSuccess,
+    failureTypename: gqlNames.ItemAuthenticationWithMetamaskFailure,
   })});
 `;
   // -- TEMPLATE END

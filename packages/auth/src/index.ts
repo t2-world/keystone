@@ -25,10 +25,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 }: AuthConfig<ListTypeInfo>) {
   const gqlNames: AuthGqlNames = {
     // Core
-    authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
-    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
-    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess`,
-    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure`,
+    authenticateItemWithMetamask: `authenticate${listKey}WithMetamask`,
+    ItemAuthenticationWithMetamaskResult: `${listKey}AuthenticationWithMetamaskResult`,
+    ItemAuthenticationWithMetamaskSuccess: `${listKey}AuthenticationWithMetamaskSuccess`,
+    ItemAuthenticationWithMetamaskFailure: `${listKey}AuthenticationWithMetamaskFailure`,
   };
 
   /**
