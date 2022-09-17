@@ -120,14 +120,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       const msg = `A createAuth() invocation for the "${listKey}" list specifies ${i} as its identityField but no field with that key exists on the list.`;
       throw new Error(msg);
     }
-
-    // TODO: We could make the secret field optional to disable the standard id/secret auth and password resets (ie. magic links only)
-    // const secretFieldConfig = listConfig.fields[secretField];
-    // if (secretFieldConfig === undefined) {
-    //   const s = JSON.stringify(secretField);
-    //   const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField but no field with that key exists on the list.`;
-    //   throw new Error(msg);
-    // }
   };
 
   /**
