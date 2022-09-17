@@ -104,5 +104,5 @@ export const getSchemaExtension = ({
       );
     }
 
-    return [baseSchema.extension].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
+    return [baseSchema.extension];
   });
