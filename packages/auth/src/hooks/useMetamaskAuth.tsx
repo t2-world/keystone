@@ -27,7 +27,7 @@ export const useMetamaskAuth = ({
   const startAuthentication = async () => {
     const account = await getMetaMaskAccount();
 
-    const getNonceResponse = await getNonceRequest({ variables: { publicAddress: account } });
+    const getNonceResponse = await getNonceRequest({ variables: { identity: account } });
 
     const nonce = getNonceResponse.data.userNonce.nonce;
     const signature = await signMessage(nonce);
@@ -57,8 +57,8 @@ export const useMetamaskAuth = ({
   const [authenticateRequest, authenticateResponse] = useMutation(authenticateMutation);
 
   const getNonceQuery = gql`
-    query ($publicAddress: String!) {
-      userNonce(publicAddress: $publicAddress) {
+    query ($identity: String!) {
+      userNonce(${identityField}: $identity) {
         nonce
       }
     }
