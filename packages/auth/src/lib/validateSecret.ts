@@ -1,11 +1,9 @@
 import type { KeystoneDbAPI } from '@keystone-6/core/types';
 import { utils } from 'ethers';
-import { SecretFieldImpl } from '../types';
 import { generateNonce } from '../services/generateNonce';
 import { isNonceExpired } from '../services/isNonceExpired';
 
 export async function validateSecret(
-  secretFieldImpl: SecretFieldImpl,
   identityField: string,
   identityNotFormatted: string,
   secretField: string,

@@ -1,42 +1,9 @@
 import { ExtendGraphqlSchema, getGqlNames } from '@keystone-6/core/types';
 
-import {
-  assertObjectType,
-  GraphQLSchema,
-  assertInputObjectType,
-  GraphQLString,
-  GraphQLID,
-  parse,
-  validate,
-} from 'graphql';
+import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, SecretFieldImpl } from './types';
+import { AuthGqlNames } from './types';
 import { getMetaMaskAuthSchema } from './gql/getMetaMaskAuthSchema';
-
-function assertSecretFieldImpl(
-  impl: any,
-  listKey: string,
-  secretField: string
-): asserts impl is SecretFieldImpl {
-  if (
-    !impl ||
-    typeof impl.compare !== 'function' ||
-    impl.compare.length < 2 ||
-    typeof impl.generateHash !== 'function'
-  ) {
-    const s = JSON.stringify(secretField);
-    let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, but the field type doesn't implement the required functionality.`;
-    throw new Error(msg);
-  }
-}
-
-export function getSecretFieldImpl(schema: GraphQLSchema, listKey: string, fieldKey: string) {
-  return {};
-  const gqlOutputType = assertObjectType(schema.getType(listKey));
-  const secretFieldImpl = gqlOutputType.getFields()?.[fieldKey].extensions?.keystoneSecretField;
-  assertSecretFieldImpl(secretFieldImpl, listKey, fieldKey);
-  return secretFieldImpl;
-}
 
 export const getSchemaExtension = ({
   identityField,
@@ -72,7 +39,6 @@ export const getSchemaExtension = ({
       listKey,
       secretField,
       gqlNames,
-      secretFieldImpl: getSecretFieldImpl(base.schema, listKey, secretField),
       base,
     });
 

@@ -1,6 +1,6 @@
 import type { BaseItem } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, SecretFieldImpl } from '../types';
+import { AuthGqlNames } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
 import { utils } from 'ethers';
@@ -11,14 +11,12 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
   identityField,
   secretField,
   gqlNames,
-  secretFieldImpl,
   base,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
   gqlNames: AuthGqlNames;
-  secretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
 }) {
   const ItemAuthenticationWithMetamaskSuccess = graphql.object<{
@@ -128,7 +126,6 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
 
           const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
-            secretFieldImpl,
             identityField,
             identity,
             secretField,
