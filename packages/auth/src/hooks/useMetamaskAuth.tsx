@@ -63,7 +63,9 @@ export const useMetamaskAuth = ({
       }
     }
   `;
-  const [getNonceRequest, getNonceResponse] = useLazyQuery(getNonceQuery);
+  const [getNonceRequest, getNonceResponse] = useLazyQuery(getNonceQuery, {
+    fetchPolicy: 'no-cache',
+  });
 
   return [
     startAuthentication,
