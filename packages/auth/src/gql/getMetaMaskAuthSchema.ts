@@ -6,7 +6,7 @@ import { validateSecret } from '../lib/validateSecret';
 import { utils } from 'ethers';
 import { generateNonce } from '../services/generateNonce';
 
-export function getBaseAuthSchema<I extends string, S extends string>({
+export function getMetaMaskAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,

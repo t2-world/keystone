@@ -11,7 +11,7 @@ import {
 } from 'graphql';
 import { graphql } from '@keystone-6/core';
 import { AuthGqlNames, SecretFieldImpl } from './types';
-import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
+import { getMetaMaskAuthSchema } from './gql/getMetaMaskAuthSchema';
 
 function assertSecretFieldImpl(
   impl: any,
@@ -67,7 +67,7 @@ export const getSchemaExtension = ({
           `to the field at ${listKey}.${identityField}`
       );
     }
-    const baseSchema = getBaseAuthSchema({
+    const baseSchema = getMetaMaskAuthSchema({
       identityField,
       listKey,
       secretField,
