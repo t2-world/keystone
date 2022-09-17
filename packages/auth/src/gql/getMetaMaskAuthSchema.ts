@@ -73,7 +73,8 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        resolve: async (root, { [identityField]: identity }, { query, session, db }) => {
+        resolve: async (root, { [identityField]: identityNotFormatted }, { query }) => {
+          const identity = identityNotFormatted.toLowerCase();
           if (!utils.isAddress(identity)) {
             return { code: 'FAILURE', message: 'Address invalid' };
           }
@@ -93,7 +94,7 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
               where: { id: existingUser.id },
               data: {
                 nonce: generateNonce(identity),
-                nonceCreationDate: `${new Date().toISOString()}`,
+                nonceCreationDate: new Date().toISOString(),
                 isValidated: false,
               },
               query: 'nonce',
