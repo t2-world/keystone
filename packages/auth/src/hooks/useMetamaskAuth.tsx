@@ -1,4 +1,4 @@
-import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo';
+import { useMutation, useLazyQuery, gql } from '@keystone-6/core/admin-ui/apollo';
 import { ethers } from 'ethers';
 
 export const useMetamaskAuth = ({
@@ -29,7 +29,7 @@ export const useMetamaskAuth = ({
 
     const getNonceResponse = await getNonceRequest({ variables: { publicAddress: account } });
 
-    const nonce = getNonceResponse.data.getNonce.nonce;
+    const nonce = getNonceResponse.data.userNonce.nonce;
     const signature = await signMessage(nonce);
 
     return await authenticateRequest({
@@ -56,14 +56,14 @@ export const useMetamaskAuth = ({
   `;
   const [authenticateRequest, authenticateResponse] = useMutation(authenticateMutation);
 
-  const getNonceMutation = gql`
-    mutation getNonce($publicAddress: String!) {
-      getNonce(publicAddress: $publicAddress) {
+  const getNonceQuery = gql`
+    query ($publicAddress: String!) {
+      userNonce(publicAddress: $publicAddress) {
         nonce
       }
     }
   `;
-  const [getNonceRequest, getNonceResponse] = useMutation(getNonceMutation);
+  const [getNonceRequest, getNonceResponse] = useLazyQuery(getNonceQuery);
 
   return [
     startAuthentication,

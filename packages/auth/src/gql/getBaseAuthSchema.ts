@@ -3,6 +3,8 @@ import { graphql } from '@keystone-6/core';
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
+import { utils } from 'ethers';
+import { generateNonce } from '../services/generateNonce';
 
 export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
@@ -45,6 +47,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       return gqlNames.ItemAuthenticationWithMetamaskFailure;
     },
   });
+  // @ts-ignore
   const extension = {
     query: {
       authenticatedItem: graphql.field({
@@ -58,6 +61,55 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             return db[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
+        },
+      }),
+      userNonce: graphql.field({
+        type: graphql.object<{ nonce: string }>()({
+          name: 'UserNonce',
+          fields: {
+            nonce: graphql.field({ type: graphql.nonNull(graphql.String) }),
+          },
+        }),
+        args: {
+          [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+        },
+        resolve: async (root, { [identityField]: identity }, { query, session, db }) => {
+          if (!utils.isAddress(identity)) {
+            return { code: 'FAILURE', message: 'Address invalid' };
+          }
+
+          const getNewUser = async () => {
+            return await query.User.createOne({
+              data: {
+                [identityField]: identity,
+                nonce: generateNonce(identity),
+                isValidated: false,
+              },
+              query: 'nonce',
+            });
+          };
+          const getUpdatedUser = async existingUser => {
+            return await query.User.updateOne({
+              where: { id: existingUser.id },
+              data: {
+                nonce: generateNonce(identity),
+                nonceCreationDate: `${new Date().toISOString()}`,
+                isValidated: false,
+              },
+              query: 'nonce',
+            });
+          };
+
+          const existingUser = await query.User.findOne({
+            where: { [identityField]: identity },
+            query: 'id nonce',
+          });
+
+          const user = existingUser ? await getUpdatedUser(existingUser) : await getNewUser();
+
+          return {
+            nonce: user.nonce,
+          };
         },
       }),
     },

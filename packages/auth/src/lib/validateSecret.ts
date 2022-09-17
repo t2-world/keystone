@@ -1,6 +1,7 @@
 import type { KeystoneDbAPI } from '@keystone-6/core/types';
 import { SecretFieldImpl } from '../types';
 import { utils } from 'ethers';
+import { generateNonce } from '../services/generateNonce';
 const TIMEOUT = 5; // min
 function getMinutesBetweenDates(startDate: Date, endDate: Date) {
   var diff = endDate.getTime() - startDate.getTime();
@@ -31,7 +32,7 @@ export async function validateSecret(
     await dbItemAPI.updateOne({
       where: { publicAddress: item.publicAddress },
       data: {
-        nonce: `${new Date().toISOString()}_${identity}`,
+        nonce: generateNonce(identity),
         nonceCreationDate: `${new Date().toISOString()}`,
         isValidated: true,
       },
