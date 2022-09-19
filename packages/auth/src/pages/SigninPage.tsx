@@ -17,6 +17,7 @@ import { useMetamaskAuth } from '../hooks/useMetamaskAuth';
 type SigninPageProps = {
   identityField: string;
   secretField: string;
+  nonceField: string;
   mutationName: string;
   successTypename: string;
   failureTypename: string;
@@ -27,6 +28,7 @@ export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...p
 export const SigninPage = ({
   identityField,
   secretField,
+  nonceField,
   mutationName,
   successTypename,
   failureTypename,
@@ -35,6 +37,7 @@ export const SigninPage = ({
     config: {
       identityField,
       secretField,
+      nonceField,
       mutationName,
       successTypename,
       failureTypename,

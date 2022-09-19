@@ -9,12 +9,14 @@ export const getSchemaExtension = ({
   identityField,
   listKey,
   secretField,
+  nonceField,
   gqlNames,
   sessionData,
 }: {
   identityField: string;
   listKey: string;
   secretField: string;
+  nonceField: string;
   gqlNames: AuthGqlNames;
   sessionData: string;
 }): ExtendGraphqlSchema =>
@@ -38,6 +40,7 @@ export const getSchemaExtension = ({
       identityField,
       listKey,
       secretField,
+      nonceField,
       gqlNames,
       base,
     });

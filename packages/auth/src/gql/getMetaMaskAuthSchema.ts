@@ -10,12 +10,14 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
+  nonceField,
   gqlNames,
   base,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
+  nonceField: string;
   gqlNames: AuthGqlNames;
   base: graphql.BaseSchemaMeta;
 }) {
@@ -62,10 +64,10 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
         },
       }),
       userNonce: graphql.field({
-        type: graphql.object<{ nonce: string }>()({
+        type: graphql.object()({
           name: 'UserNonce',
           fields: {
-            nonce: graphql.field({ type: graphql.nonNull(graphql.String) }),
+            [nonceField]: graphql.field({ type: graphql.nonNull(graphql.String) }),
           },
         }),
         args: {
@@ -81,33 +83,33 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
             return await query.User.createOne({
               data: {
                 [identityField]: identity,
-                nonce: generateNonce(identity),
+                [nonceField]: generateNonce(identity),
                 isValidated: false,
               },
-              query: 'nonce',
+              query: nonceField,
             });
           };
           const getUpdatedUser = async existingUser => {
             return await query.User.updateOne({
               where: { id: existingUser.id },
               data: {
-                nonce: generateNonce(identity),
-                nonceCreationDate: new Date().toISOString(),
+                [nonceField]: generateNonce(identity),
+                [`${nonceField}CreationDate`]: new Date().toISOString(),
                 isValidated: false,
               },
-              query: 'nonce',
+              query: nonceField,
             });
           };
 
           const existingUser = await query.User.findOne({
             where: { [identityField]: identity },
-            query: 'id nonce',
+            query: `id ${nonceField}`,
           });
 
           const user = existingUser ? await getUpdatedUser(existingUser) : await getNewUser();
 
           return {
-            nonce: user.nonce,
+            [nonceField]: user[nonceField],
           };
         },
       }),
@@ -130,6 +132,7 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
             identity,
             secretField,
             secret,
+            nonceField,
             dbItemAPI
           );
 

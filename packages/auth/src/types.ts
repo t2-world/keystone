@@ -14,6 +14,8 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   identityField: ListTypeInfo['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: ListTypeInfo['fields'];
+  /** The path of the field the nonce is stored in; must be text-ish */
+  nonceField: ListTypeInfo['fields'];
   /** Session data population */
   sessionData?: string;
 };

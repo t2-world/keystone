@@ -2,7 +2,14 @@ import { useMutation, useLazyQuery, gql } from '@keystone-6/core/admin-ui/apollo
 import { ethers } from 'ethers';
 
 export const useMetamaskAuth = ({
-  config: { identityField, secretField, mutationName, successTypename, failureTypename },
+  config: {
+    identityField,
+    secretField,
+    nonceField,
+    mutationName,
+    successTypename,
+    failureTypename,
+  },
 }) => {
   const getMetaMaskProvider = () => {
     return new ethers.providers.Web3Provider(window.ethereum);
@@ -29,7 +36,7 @@ export const useMetamaskAuth = ({
 
     const getNonceResponse = await getNonceRequest({ variables: { identity: account } });
 
-    const nonce = getNonceResponse.data.userNonce.nonce;
+    const nonce = getNonceResponse.data.userNonce[nonceField];
     const signature = await signMessage(nonce);
 
     return await authenticateRequest({
@@ -57,9 +64,9 @@ export const useMetamaskAuth = ({
   const [authenticateRequest, authenticateResponse] = useMutation(authenticateMutation);
 
   const getNonceQuery = gql`
-    query ($identity: String!) {
+    query($identity: String!) {
       userNonce(${identityField}: $identity) {
-        nonce
+        ${nonceField}
       }
     }
   `;

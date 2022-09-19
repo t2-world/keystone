@@ -21,6 +21,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
   secretField,
   identityField,
+  nonceField = 'nonce',
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
   const gqlNames: AuthGqlNames = {
@@ -72,7 +73,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ gqlNames, identityField, secretField }),
+        src: signinTemplate({ gqlNames, identityField, secretField, nonceField }),
         outputPath: 'pages/signin.js',
       },
     ];
@@ -95,6 +96,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     identityField,
     listKey,
     secretField,
+    nonceField,
     gqlNames,
     sessionData,
   });

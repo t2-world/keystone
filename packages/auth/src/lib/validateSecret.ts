@@ -8,6 +8,7 @@ export async function validateSecret(
   identityNotFormatted: string,
   secretField: string,
   secret: string,
+  nonceField: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<{ success: false } | { success: true; item: { id: any; [prop: string]: any } }> {
   const identity = identityNotFormatted.toLowerCase();
@@ -18,7 +19,7 @@ export async function validateSecret(
     return { success: false };
   }
 
-  const signerAddress = utils.verifyMessage(item.nonce, secret).toLocaleLowerCase();
+  const signerAddress = utils.verifyMessage(item[nonceField], secret).toLocaleLowerCase();
   if (signerAddress !== identity) {
     return { success: false };
   }
@@ -30,8 +31,8 @@ export async function validateSecret(
   const updatedItem = await dbItemAPI.updateOne({
     where: { [identityField]: item[identityField] },
     data: {
-      nonce: generateNonce(identity),
-      nonceCreationDate: new Date().toISOString(),
+      [nonceField]: generateNonce(identity),
+      [`${nonceField}CreationDate`]: new Date().toISOString(),
       isValidated: true,
     },
   });

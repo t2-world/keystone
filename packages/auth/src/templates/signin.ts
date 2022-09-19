@@ -4,10 +4,12 @@ export const signinTemplate = ({
   gqlNames,
   identityField,
   secretField,
+  nonceField,
 }: {
   gqlNames: AuthGqlNames;
   identityField: string;
   secretField: string;
+  nonceField: string;
 }) => {
   // -- TEMPLATE START
   return `import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'
@@ -15,6 +17,7 @@ export const signinTemplate = ({
 export default getSigninPage(${JSON.stringify({
     identityField: identityField,
     secretField: secretField,
+    nonceField: nonceField,
     mutationName: gqlNames.authenticateItemWithMetamask,
     successTypename: gqlNames.ItemAuthenticationWithMetamaskSuccess,
     failureTypename: gqlNames.ItemAuthenticationWithMetamaskFailure,
