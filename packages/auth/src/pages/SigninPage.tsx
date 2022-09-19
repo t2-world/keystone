@@ -50,7 +50,7 @@ export const SigninPage = ({
 
   const handleAuthenticateWithMetaMask = async () => {
     const result = await authenticate();
-    if (result.data.authenticate?.__typename === successTypename) {
+    if (result?.data?.authenticate?.__typename === successTypename) {
       reinitContext();
       router.push(redirect);
     }
@@ -77,7 +77,7 @@ export const SigninPage = ({
         <H1>Sign In</H1>
         {error && (
           <Notice title="Error" tone="negative">
-            {error.message}
+            {error.reason || error.message}
           </Notice>
         )}
         {data?.authenticate?.__typename === failureTypename && (
