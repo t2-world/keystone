@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '../../packages/auth/src/index';
+import { createAuth } from '../../packages/metaMaskAuth/src/index';
 import { lists } from './schema';
 
 /**
@@ -18,28 +18,15 @@ const { withAuth } = createAuth({
   // This is the list that contains items people can sign in as
   listKey: 'User',
   // The identity field is typically a username or email address
-  identityField: 'email',
-  // The secret field must be a password type field
-  // secretField: 'password',
+  identityField: 'publicAddress',
+  // The secret field is used for signature
+  secretField: 'signature',
+  // The nonce field
+  nonceField: 'nonce',
   /* TODO -- review this later, it's not implemented yet and not fully designed (e.g error cases)
   // This ensures than an item is actually able to sign in
   validateItem: ({ item }) => item.isEnabled,
   */
-  // initFirstItem turns on the "First User" experience, which prompts you to create a new user
-  // when there are no items in the list yet
-  initFirstItem: {
-    // These fields are collected in the "Create First User" form
-    fields: ['name', 'email', 'password'],
-    // This is additional data that will be set when creating the first item
-    itemData: {
-      // We need to specify that isAdmin is true for the first item, so the user can access the
-      // Admin UI (see isAccessAllowed in the admin config below)
-      isAdmin: true,
-      // Only enabled users can sign in, so we need to set this as well
-      // TODO: Come back to this when we review how to restrict signin to valid users
-      // isEnabled: true,
-    },
-  },
   // Populate session.data based on the authed user
   sessionData: 'name isAdmin',
 });
