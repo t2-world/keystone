@@ -2,7 +2,7 @@ import type { BaseItem } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 import { AuthGqlNames } from '../types';
 
-import { validateSecret } from '../lib/validateSecret';
+import { validateSecret } from '../services/validateSecret';
 import { utils } from 'ethers';
 import { generateNonce } from '../services/generateNonce';
 

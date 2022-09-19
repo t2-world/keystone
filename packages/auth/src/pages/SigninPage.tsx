@@ -11,7 +11,7 @@ import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/cont
 import { useRouter } from '@keystone-6/core/admin-ui/router';
 import { LoadingDots } from '@keystone-ui/loading';
 import { SigninContainer } from '../components/SigninContainer';
-import { useRedirect } from '../lib/useFromRedirect';
+import { useRedirect } from '../hooks/useFromRedirect';
 import { useMetamaskAuth } from '../hooks/useMetamaskAuth';
 
 type SigninPageProps = {
