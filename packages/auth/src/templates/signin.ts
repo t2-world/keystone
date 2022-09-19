@@ -12,7 +12,7 @@ export const signinTemplate = ({
   nonceField: string;
 }) => {
   // -- TEMPLATE START
-  return `import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'
+  return `import { getSigninPage } from '../../../packages/metaMaskAuth/src/pages/SigninPage'
 
 export default getSigninPage(${JSON.stringify({
     identityField: identityField,
