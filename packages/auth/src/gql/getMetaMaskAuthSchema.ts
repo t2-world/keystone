@@ -73,40 +73,24 @@ export function getMetaMaskAuthSchema<I extends string, S extends string>({
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        resolve: async (root, { [identityField]: identityNotFormatted }, { query }) => {
+        resolve: async (root, { [identityField]: identityNotFormatted }, { prisma }) => {
           const identity = identityNotFormatted.toLowerCase();
           if (!utils.isAddress(identity)) {
             return { code: 'FAILURE', message: 'Address invalid' };
           }
 
-          const getNewUser = async () => {
-            return await query.User.createOne({
-              data: {
-                [identityField]: identity,
-                [nonceField]: generateNonce(identity),
-                isValidated: false,
-              },
-              query: nonceField,
-            });
-          };
-          const getUpdatedUser = async existingUser => {
-            return await query.User.updateOne({
-              where: { id: existingUser.id },
-              data: {
-                [nonceField]: generateNonce(identity),
-                [`${nonceField}CreationDate`]: new Date().toISOString(),
-                isValidated: false,
-              },
-              query: nonceField,
-            });
-          };
-
-          const existingUser = await query.User.findOne({
+          const user = await prisma.user.upsert({
             where: { [identityField]: identity },
-            query: `id ${nonceField}`,
+            update: {
+              [nonceField]: generateNonce(identity),
+              [`${nonceField}CreationDate`]: new Date().toISOString(),
+              isValidated: false,
+            },
+            create: {
+              [identityField]: identity,
+              [nonceField]: generateNonce(identity),
+            },
           });
-
-          const user = existingUser ? await getUpdatedUser(existingUser) : await getNewUser();
 
           return {
             [nonceField]: user[nonceField],
