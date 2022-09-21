@@ -1,5 +1,4 @@
 import { ExtendGraphqlSchema, getGqlNames } from '@keystone-6/core/types';
-
 import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql';
 import { graphql } from '@keystone-6/core';
 import { AuthGqlNames } from './types';
