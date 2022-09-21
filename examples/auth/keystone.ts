@@ -28,7 +28,7 @@ const { withAuth } = createAuth({
   validateItem: ({ item }) => item.isEnabled,
   */
   // Populate session.data based on the authed user
-  sessionData: 'name isAdmin',
+  sessionData: 'id publicAddress',
 });
 
 // withAuth applies the signin functionality to the keystone config
