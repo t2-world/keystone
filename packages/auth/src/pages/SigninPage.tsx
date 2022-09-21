@@ -1,12 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-
 import { useEffect } from 'react';
-
 import { jsx, H1, Stack, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Notice } from '@keystone-ui/notice';
-
 import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context';
 import { useRouter } from '@keystone-6/core/admin-ui/router';
 import { LoadingDots } from '@keystone-ui/loading';

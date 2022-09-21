@@ -1,8 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-
 import { ReactNode } from 'react';
-
 import { jsx, Box, Center, useTheme } from '@keystone-ui/core';
 
 type SigninContainerProps = {

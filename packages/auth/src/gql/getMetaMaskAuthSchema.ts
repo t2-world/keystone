@@ -1,9 +1,8 @@
 import type { BaseItem } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames } from '../types';
-
-import { validateSecret } from '../services/validateSecret';
 import { utils } from 'ethers';
+import { AuthGqlNames } from '../types';
+import { validateSecret } from '../services/validateSecret';
 import { generateNonce } from '../services/generateNonce';
 
 export function getMetaMaskAuthSchema<I extends string, S extends string>({

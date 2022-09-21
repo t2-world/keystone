@@ -1,4 +1,4 @@
-import type { KeystoneDbAPI } from 'packages/core/types';
+import type { KeystoneDbAPI } from '@keystone-6/core/types';
 import { utils } from 'ethers';
 import { generateNonce } from './generateNonce';
 import { isNonceExpired } from './isNonceExpired';
